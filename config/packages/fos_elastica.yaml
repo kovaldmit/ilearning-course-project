@@ -1,0 +1,104 @@
+fos_elastica:
+    clients:
+        default:
+            host: '%env(ELASTICSEARCH_HOST)%'
+            port: '%env(ELASTICSEARCH_PORT)%'
+            username: '%env(ELASTICSEARCH_USER)%'
+            password: '%env(ELASTICSEARCH_PASSWORD)%'
+    indexes:
+        collection:
+            settings:
+                analysis:
+                    analyzer:
+                        custom_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter: [ lowercase ]
+            properties:
+                name:
+                    type: text
+                    analyzer: custom_analyzer
+                description:
+                    type: text
+                    analyzer: custom_analyzer
+                tags:
+                    type: nested
+                    properties:
+                        name:
+                            type: text
+                            analyzer: custom_analyzer
+                comments:
+                    type: nested
+                    properties:
+                        content:
+                            type: text
+                            analyzer: custom_analyzer
+                items:
+                    type: nested
+                    properties:
+                        name:
+                            type: text
+                            analyzer: custom_analyzer
+            persistence:
+                driver: orm
+                model: App\Entity\CollectionContainer
+                provider: ~
+                listener: ~
+                finder: ~
+
+        tag:
+            settings:
+                analysis:
+                    analyzer:
+                        custom_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter: [ lowercase ]
+            properties:
+                name:
+                    type: text
+                    analyzer: custom_analyzer
+            persistence:
+                driver: orm
+                model: App\Entity\Tag
+                provider: ~
+                listener: ~
+                finder: ~
+
+        comment:
+            settings:
+                analysis:
+                    analyzer:
+                        custom_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter: [ lowercase ]
+            properties:
+                content:
+                    type: text
+                    analyzer: custom_analyzer
+            persistence:
+                driver: orm
+                model: App\Entity\Comment
+                provider: ~
+                listener: ~
+                finder: ~
+
+        item:
+            settings:
+                analysis:
+                    analyzer:
+                        custom_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter: [ lowercase ]
+            properties:
+                name:
+                    type: text
+                    analyzer: custom_analyzer
+            persistence:
+                driver: orm
+                model: App\Entity\CollectionItem
+                provider: ~
+                listener: ~
+                finder: ~

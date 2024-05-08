@@ -1,0 +1,36 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Collections{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <h1 class="m-0 text-center">Collections</h1>
+    </div>
+
+    <div class="foreground">
+        <div class="list-group">
+            {% for container in containers %}
+                {% include 'collection_container/item.html.twig' %}
+            {% endfor %}
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+            <a href="{{ path('collection_container_new') }}" class="btn btn-success mt-3">Create</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.collection-container').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const containerId = event.currentTarget.getAttribute('data-container-id');
+                    window.location.href = "{{ path('collection_container_index') }}" + containerId;
+                });
+                button.style.cursor = "pointer";
+            });
+        });
+    </script>
+{% endblock %}

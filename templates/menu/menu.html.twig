@@ -1,0 +1,21 @@
+<ul class="{{ options.navbar_class }}">
+    {% for item in item.children %}
+        {% set linkAttributes = item.getLinkAttributes()|merge({'class': 'nav-link' ~ (item.isCurrent ? ' active' : '') ~ ' ' ~ item.getLinkAttribute('class')}) %}
+        <li class="nav-item {{ item.getAttribute('class') }}">
+            <a href="{{ item.uri }}" {% for attr, value in linkAttributes %}{{ attr }}="{{ value }}"{% endfor %}>
+            {% if item.getExtra('icon') is defined %}
+                <i class="{{ item.getExtra('icon') }}"></i>
+            {% endif %}
+            {{ item.label|raw }}
+            </a>
+
+            {% if item.children %}
+                <ul class="dropdown-menu">
+                    {% for child in item.children %}
+                        <li><a class="dropdown-item" href="{{ child.uri }}">{{ child.label }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

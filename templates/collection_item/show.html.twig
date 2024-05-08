@@ -1,0 +1,70 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Item{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('collection_container_index') }}">
+                        Collections
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ path('collection_container_show', {id: item.collectionContainer.getId}) }}">
+                        {{ item.collectionContainer.getName }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ item.name }}
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="foreground">
+        <h1 class="m-0 text-center">{{ item.name }}</h1>
+    </div>
+
+    <div class="foreground">
+        {% set customFields = item.collectionContainer.customFields %}
+        {% if customFields is not empty %}
+            <table class="table">
+                <tbody>
+                {% for customField in customFields %}
+                    <tr>
+                        <th>{{ customField.getName }}</th>
+                        <td>
+                            {% set customFieldValue = item.customFieldValue(customField) %}
+                            {% if customFieldValue %}
+                                {{ customFieldValue.getValue }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+            <div class="btn-group d-flex">
+                {% if is_granted('edit', item) %}
+                    <a href="{{ path('collection_item_edit', {id: item.id}) }}" class="btn btn-warning">Edit</a>
+                    <a href="#" class="btn btn-danger"
+                       onclick="event.preventDefault(); document.getElementById('delete-form-{{ item.id }}').submit();">Delete</a>
+                {% endif %}
+            </div>
+
+            {# Form for Delete button #}
+            <form id="delete-form-{{ item.id }}"
+                  action="{{ path('collection_item_delete', {'id': item.id}) }}"
+                  method="post" style="display:none;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+            </form>
+        {% else %}
+            <div class="text-center">
+                Collection item has no fields
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

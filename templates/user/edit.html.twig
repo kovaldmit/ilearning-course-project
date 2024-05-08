@@ -1,0 +1,46 @@
+{% extends 'form/form-center.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block form_title %}
+    Edit User
+{% endblock %}
+
+{% block form_items %}
+    {{ form_widget(form) }}
+{% endblock %}
+
+{% block form_buttons %}
+    <button class="btn btn-success">Save</button>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="#" class="btn btn-primary"
+           onclick="event.preventDefault(); document.getElementById('toggle-role-form-{{ user.id }}').submit();">
+            {% if 'ROLE_ADMIN' in user.roles %}
+                Remove Admin
+            {% else %}
+                Grant Admin
+            {% endif %}
+        </a>
+        <a href="#" class="btn btn-danger"
+           onclick="event.preventDefault(); document.getElementById('delete-form-{{ user.id }}').submit();">Delete</a>
+    {% endif %}
+{% endblock %}
+
+{% block form_other %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {# Form for Delete button #}
+        <form id="delete-form-{{ user.id }}"
+              action="{{ path('user_delete', {'id': user.id}) }}"
+              method="post" style="display:none;">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+        </form>
+
+        {# Form for Role Toggle button   #}
+        <form id="toggle-role-form-{{ user.id }}"
+              action="{{ path('user_toggle_role', {'id': user.id}) }}"
+              method="post" style="display:none;">
+            <input type="hidden" name="_token" value="{{ csrf_token('toggle_role' ~ user.id) }}">
+        </form>
+    {% endif %}
+{% endblock %}

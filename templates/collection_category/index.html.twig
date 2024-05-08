@@ -1,0 +1,51 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <h1 class="m-0 text-center">Categories</h1>
+    </div>
+
+    <div class="foreground">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ path('collection_category_show', {'id': category.id}) }}"
+                               class="btn btn-primary">View</a>
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('collection_category_edit', {'id': category.id}) }}"
+                                   class="btn btn-warning">Edit</a>
+                                <a href="#" class="btn btn-danger"
+                                   onclick="event.preventDefault(); document.getElementById('delete-form-{{ category.id }}').submit();">Delete</a>
+                            {% endif %}
+                        </div>
+
+                        {# Form for Delete button #}
+                        <form id="delete-form-{{ category.id }}"
+                              action="{{ path('collection_category_delete', {'id': category.id}) }}"
+                              method="post" style="display:none;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('collection_category_new') }}" class="btn btn-success">Create</a>
+        {% endif %}
+    </div>
+{% endblock %}

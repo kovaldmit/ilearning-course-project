@@ -1,0 +1,126 @@
+.layout {
+  display: flex; /* required for always below footer */
+  flex-direction: column; /* required for always below footer */
+  height: 100vh; /* required for always below footer */
+}
+
+header {
+  flex-shrink: 0; /* required for always below footer */
+
+  .navbar {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15) !important;
+    background-color: var(--bs-body-bg) !important;
+  }
+
+  .navbar-brand {
+    color: var(--bs-body-color);
+    font-family: $logo-font-family;
+    font-weight: $logo-font-weight;
+    text-transform: uppercase;
+  }
+}
+
+main {
+  flex-grow: 1;
+  background-color: var(--bs-body-bg);
+  width: 100%;
+  padding: 1rem 0;
+}
+
+footer {
+  flex-shrink: 0; /* required for always below footer */
+  width: 100%;
+
+  .copyright {
+    text-align: center;
+    padding: .75rem 0 .75rem 0;
+    background-color: $footer-copyright-bg;
+    color: $footer-copyright-color;
+    font-size: $footer-copyright-font-size;
+    font-family: $footer-copyright-font-family;
+    font-weight: $footer-copyright-font-weight;
+    text-transform: uppercase;
+
+    a {
+      text-decoration: none;
+      color: $footer-copyright-color;
+    }
+  }
+}
+
+.page-center {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.form-page-wrapper {
+  width: 400px;
+  margin: 4rem auto 0 auto;
+  border-radius: var(--bs-border-radius) !important;
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-tertiary-bg-rgb), var(--bs-bg-opacity)) !important;
+  padding: 1rem !important;
+  box-shadow: var(--bs-box-shadow) !important;
+}
+
+.foreground {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-tertiary-bg-rgb), var(--bs-bg-opacity)) !important;
+  border-radius: var(--bs-border-radius) !important;
+  padding: 1rem;
+  box-shadow: var(--bs-box-shadow) !important;
+  margin: 1rem 0;
+
+  ol.breadcrumb {
+    margin: 0;
+  }
+}
+
+.collection-container {
+  .title {
+    text-align: center;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .image {
+    text-align: center;
+
+    img {
+      max-height: 400px;
+    }
+  }
+
+
+  .tags {
+    ul {
+      li {
+        padding: 0;
+      }
+    }
+
+    .input-group {
+      max-width: 300px;
+    }
+  }
+}
+
+.grid-table {
+  .grid-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    border-bottom: #dee2e6 solid 1px;
+
+    .grid-item {
+      padding: .5rem 0;;
+    }
+  }
+}
+
+

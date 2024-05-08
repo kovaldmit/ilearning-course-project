@@ -1,0 +1,57 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <h2 class="text-center mb-5">Latest Collections</h2>
+
+        <div class="row justify-content-around">
+            {% for container in latestContainers %}
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12 my-3">
+                    <div class="card h-100 mx-auto" style="width: 18rem;">
+                        {% if container.getImage %}
+                            <img src="{{ fileUploader.getFileUrl(container.getImage) }}" class="card-img-top"
+                                 alt="Container Image">
+                        {% endif %}
+
+                        <a href="{{ path('collection_container_show', {id: container.id}) }}"
+                           class="stretched-link text-decoration-none text-body">
+                            <h5 class="card-header">{{ container.name }}</h5>
+                        </a>
+
+                        <div class="card-body">
+                            <p class="card-text">{{ container.getUnformattedDescription }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="foreground">
+        <h2 class="text-center mb-5">Biggest Collections</h2>
+
+        <div class="row justify-content-around">
+            {% for container in biggestContainers %}
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-xs-12 my-3">
+                    <div class="card h-100 mx-auto my-1" style="width: 18rem;">
+                        {% if container.getImage %}
+                            <img src="{{ fileUploader.getFileUrl(container.getImage) }}" class="card-img-top"
+                                 alt="Container Image">
+                        {% endif %}
+
+                        <a href="{{ path('collection_container_show', {id: container.id}) }}"
+                           class="stretched-link text-decoration-none text-body">
+                            <h5 class="card-header">{{ container.name }}</h5>
+                        </a>
+
+                        <div class="card-body">
+                            <p class="card-text">{{ container.getUnformattedDescription }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

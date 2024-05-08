@@ -1,0 +1,345 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}{{ container.name }}{% endblock %}
+
+{% block content %}
+    <div class="collection-container">
+        <div class="foreground">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('collection_container_index') }}">
+                            Collections
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        {{ container.name }}
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="foreground">
+            <div class="title">
+                <h1>{{ container.name }}</h1>
+            </div>
+        </div>
+
+        <div class="foreground">
+            <div class="image">
+                <img src="{{ containerImageUrl }}" class="img-thumbnail foreground" alt="">
+            </div>
+
+            <div>
+                {{ container.getFormattedDescription|raw }}
+            </div>
+
+            <div class="grid-table">
+                <div class="grid-row">
+                    <div class="grid-item fw-bold">Owner</div>
+                    <div class="grid-item">{{ container.user }}</div>
+                </div>
+
+                <div class="grid-row">
+                    <div class="grid-item fw-bold">Category</div>
+                    <div class="grid-item">{{ container.collectionCategory }}</div>
+                </div>
+
+                <div class="grid-row">
+                    <div class="grid-item fw-bold">Tags</div>
+                    <div class="grid-item">
+                        <div class="tags">
+                            {% if is_granted('edit', container) %}
+                                <div class="mb-2">
+                                    <div class="input-group">
+                                        <input type="text" id="tag-input" class="form-control"
+                                               placeholder="Enter a tag">
+                                        <button id="add-tag-button" class="btn btn-success">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <ul id="tag-suggestions" class="list-group"></ul>
+                                </div>
+                            {% endif %}
+
+                            <ul class="list-group list-group-flush">
+                                {% for tag in container.tags %}
+                                    <li class="list-group-item bg-body-tertiary">
+                                        <a href="{{ path('tag_show', {id: tag.id}) }}"
+                                           class="text-body text-decoration-none">
+                                            {{ tag.name }}
+                                        </a>
+                                        {% if is_granted('edit', container) %}
+                                            <button class="btn btn-sm remove-tag-button" data-tag-id="{{ tag.id }}">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {% if is_granted('edit', container) %}
+                    <div class="grid-row">
+                        <div class="grid-item fw-bold">Fields</div>
+                        <div class="grid-item">
+                            <div class="fields">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Field name</th>
+                                        <th>Field type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for field in container.customFields %}
+                                        <tr>
+                                            <td>{{ field.name }}</td>
+                                            <td>{{ field.type }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{ path('collection_custom_field_edit', {id: field.id}) }}"
+                                                       class="btn btn-warning">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger"
+                                                       onclick="event.preventDefault(); document.getElementById('delete-field-form-{{ field.id }}').submit();">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                </div>
+
+                                                {# Form for Delete button #}
+                                                <form id="delete-field-form-{{ field.id }}"
+                                                      action="{{ path('collection_custom_field_delete', {id: field.id}) }}"
+                                                      method="post" style="display:none;">
+                                                    <input type="hidden" name="_token"
+                                                           value="{{ csrf_token('delete' ~ field.id) }}">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <a href="{{ path('collection_custom_field_new', {containerId: container.id}) }}"
+                                   class="btn btn-success">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="btn-group mt-3">
+                <button id="like-button" data-container-id="{{ container.id }}"
+                        class="btn {{ isLiked ? 'btn-danger' : 'btn-secondary' }}">
+                    <i class="fa-solid fa-heart"></i> <span id="likes-count">{{ container.likesCount }}</span>
+                </button>
+                {% if is_granted('edit', container) %}
+                    <a href="{{ path('collection_container_edit', {'id': container.id}) }}"
+                       class="btn btn-warning">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <a href="#" class="btn btn-danger"
+                       onclick="event.preventDefault(); document.getElementById('container-delete-form').submit();">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                {% endif %}
+            </div>
+
+            {# Form for Delete button #}
+            <form id="container-delete-form"
+                  action="{{ path('collection_container_delete', {'id': container.id}) }}"
+                  method="post" style="display:none;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ container.id) }}">
+            </form>
+        </div>
+
+        {% if container.getItems is not empty or app.user == container.user or is_granted('ROLE_ADMIN') %}
+            <div class="foreground">
+                <h2 class="h3 mb-3 font-weight-normal">Items</h2>
+
+                <div class="list-group">
+                    {% for item in container.getItems %}
+                        {% include 'collection_item/item.html.twig' %}
+                    {% endfor %}
+                </div>
+
+                {% if is_granted('edit', container) %}
+                    <a href="{{ path('collection_item_new', {id: container.id}) }}" class="btn btn-success mt-3">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if comments is not empty or app.user %}
+            <div class="foreground">
+                <h2 class="h3 mb-3 font-weight-normal">Comments</h2>
+
+                <div class="list-group mb-4">
+                    {% for comment in comments %}
+                        {% include 'comment/item.html.twig' %}
+                    {% endfor %}
+                </div>
+
+                {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+                    {{ form_start(commentForm) }}
+                    {{ form_row(commentForm.content) }}
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                    {{ form_end(commentForm) }}
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tagInput = document.getElementById('tag-input');
+            const tagSuggestions = document.getElementById('tag-suggestions');
+            const csrfTokenAdd = '{{ csrf_token('add_tag' ~ container.id) }}';
+            const csrfTokenRemove = '{{ csrf_token('remove_tag' ~ container.id) }}';
+
+            const tagModule = {
+                handleTagInput: function () {
+                    const query = tagInput.value;
+
+                    if (query.length > 2) {
+                        fetch(`{{ path('collection_container_search_tags') }}?q=${query}`)
+                            .then(response => response.json())
+                            .then(tags => {
+                                tagSuggestions.innerHTML = tags.map(tag =>
+                                    `<li class="list-group-item" data-id="${tag.id}">${tag.name}</li>`).join('');
+                            });
+                    } else {
+                        tagSuggestions.innerHTML = '';
+                    }
+                },
+
+                handleTagSuggestionClick: function (e) {
+                    if (e.target.tagName === 'LI') {
+                        tagInput.value = e.target.textContent;
+                        tagInput.setAttribute('data-tag-id', e.target.getAttribute('data-id'));
+                        tagSuggestions.innerHTML = '';
+                    }
+                },
+
+                formatTagName: function (name) {
+                    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+                }
+            };
+
+            const tagsList = document.querySelector('.tags .list-group-flush');
+            const addTagModule = {
+                handleAddTag: function () {
+                    const tagName = tagModule.formatTagName(tagInput.value);
+                    const tagId = tagInput.getAttribute('data-tag-id');
+                    const url = `{{ path('collection_container_add_tag', {'id': container.id}) }}`;
+                    const body = JSON.stringify(tagId ? {tagId: tagId} : {tagName: tagName});
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfTokenAdd
+                        },
+                        body: body
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const newTag = data.tag;
+                                const newTagElement = document.createElement('li');
+                                newTagElement.classList.add('list-group-item');
+                                newTagElement.innerHTML = `
+                                    ${newTag.name}
+                                    <button class="btn btn-sm remove-tag-button" data-tag-id="${newTag.id}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                    `;
+                                tagsList.appendChild(newTagElement);
+
+                                newTagElement.querySelector('.remove-tag-button').addEventListener('click', removeTagModule.handleRemoveTag);
+
+                                tagInput.value = '';
+                                tagInput.removeAttribute('data-tag-id');
+                            }
+                        });
+                }
+            };
+
+            const removeTagModule = {
+                handleRemoveTag: function (event) {
+                    const button = event.currentTarget;
+                    const tagId = button.getAttribute('data-tag-id');
+                    const url = `{{ path('collection_container_remove_tag', {'id': container.id}) }}`;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfTokenRemove
+                        },
+                        body: JSON.stringify({tagId: tagId})
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const tagElement = button.closest('li');
+                                if (tagElement) {
+                                    tagElement.remove();
+                                }
+                            }
+                        });
+                }
+            };
+
+            if (tagInput) {
+                tagInput.addEventListener('input', tagModule.handleTagInput);
+            }
+
+            if (tagSuggestions) {
+                tagSuggestions.addEventListener('click', tagModule.handleTagSuggestionClick);
+            }
+
+            const addTagButton = document.getElementById('add-tag-button');
+            if (addTagButton) {
+                addTagButton.addEventListener('click', addTagModule.handleAddTag);
+            }
+
+            document.querySelectorAll('.remove-tag-button').forEach(button => {
+                button.addEventListener('click', removeTagModule.handleRemoveTag);
+            });
+
+            const likeButton = document.getElementById('like-button');
+            likeButton.addEventListener('click', function () {
+                fetch(`{{ path('collection_container_like', {'id': container.id}) }}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token('collection_container_like' ~ container.id) }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('likes-count').textContent = data.likesCount;
+                        if (data.isLiked) {
+                            likeButton.classList.remove('btn-secondary');
+                            likeButton.classList.add('btn-danger');
+                        } else {
+                            likeButton.classList.remove('btn-danger');
+                            likeButton.classList.add('btn-secondary');
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

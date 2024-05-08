@@ -1,0 +1,36 @@
+<header>
+    <nav class="navbar navbar-expand-md">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url('home') }}">
+                ilearn
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {{ knp_menu_render('main', {
+                    'template': 'menu/menu.html.twig',
+                    'navbar_class': 'navbar-nav me-auto mb-2 mb-lg-0'
+                }) }}
+
+                <div class="d-flex justify-content-end flex-grow-1 me-auto mb-2 mb-lg-0">
+                    {{ knp_menu_render('admin', {
+                        'template': 'menu/menu.html.twig',
+                        'navbar_class': 'navbar-nav'
+                    }) }}
+
+                    {{ knp_menu_render('account', {
+                        'template': 'menu/menu.html.twig',
+                        'navbar_class': 'navbar-nav'
+                    }) }}
+                </div>
+
+                <button id="theme-toggle" class="btn"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </div>
+    </nav>
+</header>

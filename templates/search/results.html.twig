@@ -1,0 +1,78 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <h1 class="m-0 text-center">Search</h1>
+    </div>
+
+    <div class="foreground">
+        {{ form_start(form) }}
+        <div class="input-group input-group-lg">
+            {{ form_widget(form.query) }}
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+    {% if results is not empty %}
+        <div class="foreground">
+            {% if results.containers is defined and results.containers is not empty %}
+                <div class="mb-3">
+                    <h2 class="h3 mb-3 font-weight-normal">Collections</h2>
+                    <div class="list-group">
+                        {% for container in results.containers %}
+                            {% include 'collection_container/item.html.twig' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+
+            {% if results.items is defined and results.items is not empty %}
+                <div class="mb-3">
+                    <h2 class="h3 mb-3 font-weight-normal">Items</h2>
+                    <div class="list-group">
+                        {% for item in results.items %}
+                            {% include 'collection_item/item.html.twig' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+
+            {% if results.tags is defined and results.tags is not empty %}
+                <div class="mb-3">
+                    <h2 class="h3 mb-3 font-weight-normal">Tags</h2>
+                    <div class="list-group">
+                        {% for tag in results.tags %}
+                            <a href="{{ path('tag_show', {'id': tag.id}) }}"
+                               class="list-group-item list-group-item-action">
+                                <h5 class="mb-1">{{ tag.name }}</h5>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+
+            {% if results.comments is defined and results.comments is not empty %}
+                <div class="mb-3">
+                    <h2 class="h3 mb-3 font-weight-normal">Comments</h2>
+                    <div class="list-group">
+                        {% for comment in results.comments %}
+                            <a href="{{ path('collection_container_show', {id: comment.getCollectionContainer.id}) }}">
+                                {% include 'comment/item.html.twig' %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if results.containers is empty and results.items is empty and results.tags is empty and results.comments is empty %}
+                <div class="text-center">No results found.</div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

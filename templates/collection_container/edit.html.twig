@@ -1,0 +1,28 @@
+{% extends 'form/form-center.html.twig' %}
+
+{% block title %}
+    Edit Collection
+{% endblock %}
+
+{% block form_title %}
+    Edit Collection
+{% endblock %}
+
+{% block form_items %}
+    {{ form_widget(form) }}
+{% endblock %}
+
+{% block form_buttons %}
+    <button class="btn btn-primary">Save</button>
+    <a href="#" class="btn btn-danger"
+       onclick="event.preventDefault(); document.getElementById('delete-form-{{ container.id }}').submit();">Delete</a>
+{% endblock %}
+
+{% block form_other %}
+    {# Form for Delete button #}
+    <form id="delete-form-{{ container.id }}"
+          action="{{ path('collection_container_delete', {'id': container.id}) }}"
+          method="post" style="display:none;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ container.id) }}">
+    </form>
+{% endblock %}

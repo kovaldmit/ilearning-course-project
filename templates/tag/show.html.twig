@@ -1,0 +1,33 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('tag_index') }}">
+                        Tags
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    {{ tag.name }}
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="foreground">
+        <h1 class="m-0 text-center">{{ tag.name }}</h1>
+    </div>
+    <div class="foreground">
+        <h2 class="h3 mb-3 font-weight-normal">Collections with <span class="fw-bold">{{ tag.name }}</span> tag:</h2>
+        <div class="list-group">
+            {% for container in tag.containers %}
+                {% include 'collection_container/item.html.twig' %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+

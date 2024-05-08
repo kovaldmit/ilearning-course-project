@@ -1,0 +1,13 @@
+{% block form_row %}
+    <div class="mb-3">
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+
+        {% if form_help(form) is not empty %}
+            <div class="form-text">
+                {{ form_help(form) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
