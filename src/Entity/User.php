@@ -24,6 +24,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $fullName;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -55,6 +58,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string)$this->email;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->fullName;
+    }
+
+    public function setFullName($fullName): ?string
+    {
+        $this->fullName = $fullName;
+        return $this;
     }
 
     public function getRoles(): array

@@ -121,9 +121,14 @@ class UserController extends AbstractController
                 $user->setEmail($email);
             }
 
+            $fullName = $form->get('fullName')->getData();
+            if ($fullName) {
+                $user->setFullName($fullName);
+            }
+
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
         }
 
         return $this->render('user/edit.html.twig', [

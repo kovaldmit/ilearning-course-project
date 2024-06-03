@@ -26,6 +26,14 @@
             </div>
 
             <div class="mb-3">
+                {{ form_label(registrationForm.fullName, 'Full Name', { 'label_attr': {'class': 'form-label'} }) }}
+                {{ form_widget(registrationForm.fullName, { 'attr': {'class': 'form-control'} }) }}
+                <div class="form-error">
+                    {{ form_errors(registrationForm.fullName) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
                 {{ form_label(registrationForm.plainPassword, 'Password', { 'label_attr': {'class': 'form-label'} }) }}
                 {{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'form-control'} }) }}
                 <div class="form-error">
