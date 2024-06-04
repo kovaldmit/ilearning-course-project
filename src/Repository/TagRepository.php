@@ -25,6 +25,18 @@ class TagRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findTagsWithContainerCount(): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t as tag, COUNT(c.id) as containerCount')
+            ->innerJoin('t.containers', 'c')
+            ->groupBy('t.id')
+            ->having('COUNT(c.id) > 1')
+            ->orderBy('containerCount', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Tag[] Returns an array of Tag objects
     //     */
