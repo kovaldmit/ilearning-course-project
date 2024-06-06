@@ -11,6 +11,10 @@ parameters:
     s3_endpoint: '%env(S3_ENDPOINT)%'
     s3_public_domain: '%env(S3_PUBLIC_DOMAIN)%'
 
+    jira_url: '%env(JIRA_URL)%'
+    jira_username: '%env(JIRA_USERNAME)%'
+    jira_api_token: '%env(JIRA_API_TOKEN)%'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -62,3 +66,9 @@ services:
             $itemFinder: '@fos_elastica.finder.item'
             $tagFinder: '@fos_elastica.finder.tag'
             $commentFinder: '@fos_elastica.finder.comment'
+
+    App\Service\JiraService:
+        arguments:
+            $jiraUrl: '%jira_url%'
+            $username: '%jira_username%'
+            $apiToken: '%jira_api_token%'

@@ -1,0 +1,22 @@
+{% extends 'layout/page-container.html.twig' %}
+
+{% block title %}Your Tickets{% endblock %}
+
+{% block content %}
+    <div class="foreground">
+        <h1 class="m-0 text-center">Your Tickets</h1>
+    </div>
+
+    <div class="foreground">
+        {% if tickets is empty %}
+            <div class="text-center">You have no tickets.</div>
+        {% else %}
+            <div class="list-group">
+                {% for ticket in tickets %}
+                    {% include 'jira/item.html.twig' %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

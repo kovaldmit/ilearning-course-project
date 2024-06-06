@@ -31,11 +31,18 @@ footer {
   flex-shrink: 0; /* required for always below footer */
   width: 100%;
 
-  .copyright {
-    text-align: center;
+  .first {
+    .copyright {
+
+      color: $footer-copyright-color;
+    }
+
+    .support-request {
+      text-align: end;
+    }
+
     padding: .75rem 0 .75rem 0;
     background-color: $footer-copyright-bg;
-    color: $footer-copyright-color;
     font-size: $footer-copyright-font-size;
     font-family: $footer-copyright-font-family;
     font-weight: $footer-copyright-font-weight;
