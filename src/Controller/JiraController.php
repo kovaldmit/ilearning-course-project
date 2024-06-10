@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\JiraTicketType;
 use App\Service\JiraService;
 use Exception;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,12 +24,18 @@ class JiraController extends AbstractController
 
     #[Route('/', name: 'ticket_index', methods: ['GET'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $user = $this->getUser();
 
         try {
             $tickets = $this->jiraService->getTicketsByUser($user);
+
+            $tickets = $paginator->paginate(
+                $tickets,
+                $request->query->getInt('page', 1),
+                10
+            );
         } catch (Exception $e) {
             $this->addFlash('error', 'Could not retrieve tickets: ' . $e->getMessage());
             $tickets = [];

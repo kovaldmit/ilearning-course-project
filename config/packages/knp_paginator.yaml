@@ -1,0 +1,4 @@
+knp_paginator:
+    template:
+        pagination: 'bundles/KnpPaginatorBundle/Pagination/bootstrap_v5_pagination.html.twig'
+        sortable: 'bundles/KnpPaginatorBundle/Pagination/sortable_link.html.twig'
